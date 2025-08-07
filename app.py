@@ -1,18 +1,15 @@
 import streamlit as st
 from textblob import TextBlob
 from openai import OpenAI
-import os
 
-# Set your OpenAI API key directly here
-openai.api_key = "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"
+# Initialize OpenAI client
+client = OpenAI(api_key="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")  # ← paste your key here
 
+st.set_page_config(page_title="Mood-Based AI Art Generator 🎨", layout="centered")
 st.title("🎨 Mood-Based AI Art Generator")
-st.markdown("Type how you feel and let AI turn it into art.")
+st.markdown("Type how you're feeling, and watch your emotion become AI-generated art.")
 
-# Get user input
-user_input = st.text_input("How are you feeling today?")
-
-# Detect emotion from text
+# Step 1: Detect emotion from text
 def get_emotion(text):
     blob = TextBlob(text)
     score = blob.sentiment.polarity
@@ -27,25 +24,30 @@ def get_emotion(text):
     else:
         return "calm"
 
-# Generate image from DALL·E
-from openai import OpenAI
-
-client = OpenAI(api_key="your_api_key_here")
-
+# Step 2: Generate image using DALL·E 3
 def generate_image(emotion):
-    prompt = f"Abstract digital painting inspired by {emotion}, expressive texture, emotional color scheme"
-    response = client.images.generate(
-        model="dall-e-3",   # You can also try "dall-e-2" if needed
-        prompt=prompt,
-        size="1024x1024",
-        quality="standard",
-        n=1
-    )
-    return response.data[0].url
+    prompt = f"Abstract digital art representing the emotion {emotion}, colorful emotional textures, modern and expressive style"
+    try:
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1
+        )
+        return response.data[0].url
+    except Exception as e:
+        return f"Error: {e}"
 
-# Main logic
-if st.button("Generate Art") and user_input:
+# Step 3: UI
+user_input = st.text_input("📝 How are you feeling today? (Describe in one sentence)")
+
+if st.button("🎨 Generate Art") and user_input:
     emotion = get_emotion(user_input)
-    st.write(f"Detected Emotion: **{emotion}**")
+    st.success(f"Detected Emotion: **{emotion}**")
+    
     img_url = generate_image(emotion)
-    st.image(img_url, caption=f"Art based on your mood: {emotion}")
+    if img_url.startswith("http"):
+        st.image(img_url, caption=f"Art based on your emotion: {emotion}", use_column_width=True)
+    else:
+        st.error(img_url)
