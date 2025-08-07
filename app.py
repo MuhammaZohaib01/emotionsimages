@@ -1,6 +1,6 @@
 import streamlit as st
 from textblob import TextBlob
-import openai
+from openai import OpenAI
 import os
 
 # Set your OpenAI API key directly here
@@ -28,14 +28,20 @@ def get_emotion(text):
         return "calm"
 
 # Generate image from DALL·E
+from openai import OpenAI
+
+client = OpenAI(api_key="your_api_key_here")
+
 def generate_image(emotion):
-    prompt = f"Abstract painting in digital art style, expressing {emotion} emotion, vibrant colors and emotional textures"
-    response = openai.Image.create(
+    prompt = f"Abstract digital painting inspired by {emotion}, expressive texture, emotional color scheme"
+    response = client.images.generate(
+        model="dall-e-3",   # You can also try "dall-e-2" if needed
         prompt=prompt,
-        n=1,
-        size="512x512"
+        size="1024x1024",
+        quality="standard",
+        n=1
     )
-    return response['data'][0]['url']
+    return response.data[0].url
 
 # Main logic
 if st.button("Generate Art") and user_input:
