@@ -3,8 +3,9 @@ from textblob import TextBlob
 from openai import OpenAI
 
 # Initialize OpenAI client
-client = OpenAI(api_key="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")  # ← paste your key here
+client = OpenAI(api_key="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")  # ← Replace with your API key
 
+# Streamlit page setup
 st.set_page_config(page_title="Mood-Based AI Art Generator 🎨", layout="centered")
 st.title("🎨 Mood-Based AI Art Generator")
 st.markdown("Type how you're feeling, and watch your emotion become AI-generated art.")
@@ -51,3 +52,4 @@ if st.button("🎨 Generate Art") and user_input:
         st.image(img_url, caption=f"Art based on your emotion: {emotion}", use_column_width=True)
     else:
         st.error(img_url)
+
