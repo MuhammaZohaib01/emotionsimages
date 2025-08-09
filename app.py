@@ -3,8 +3,18 @@ from textblob import TextBlob
 from openai import OpenAI
 
 # Initialize OpenAI client
-OPENAI_API_KEY = "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"
-st.set_page_config(page_title="Mood-Based AI Art Generator 🎨", layout="centered")
+from openai import OpenAI
+import streamlit as st
+
+client = OpenAI(api_key=st.secrets["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"])
+
+response = client.images.generate(
+    model="gpt-image-1",
+    prompt="A surreal painting of a cat flying in space",
+    size="1024x1024"
+)
+image_url = response.data[0].url
+
 st.title("🎨 Mood-Based AI Art Generator")
 st.markdown("Type how you're feeling, and watch your emotion become AI-generated art.")
 
